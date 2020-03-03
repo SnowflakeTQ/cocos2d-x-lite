@@ -152,6 +152,8 @@ public class Cocos2dxGLSurfaceView extends GLSurfaceView {
 
         switch (pMotionEvent.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_POINTER_DOWN:
+                if (pointerNumber > 1) return false;
+
                 if (mStopHandleTouchAndKeyEvents) {
                     Cocos2dxEditBox.complete();
                     return true;
@@ -171,6 +173,8 @@ public class Cocos2dxGLSurfaceView extends GLSurfaceView {
                 break;
 
             case MotionEvent.ACTION_DOWN:
+                if (pointerNumber > 1) return false;
+
                 if (mStopHandleTouchAndKeyEvents) {
                     Cocos2dxEditBox.complete();
                     return true;
