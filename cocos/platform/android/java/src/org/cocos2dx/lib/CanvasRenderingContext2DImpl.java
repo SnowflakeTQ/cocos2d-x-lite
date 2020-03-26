@@ -166,11 +166,11 @@ public class CanvasRenderingContext2DImpl {
 
         String key = fontName;
         if (enableBold) {
-            key += "-Bold";
+//            key += "-Bold";
             paint.setFakeBoldText(true);
         }
         if (enableItalic) {
-            key += "-Italic";
+//            key += "-Italic";
         }
 
         Typeface typeFace;
