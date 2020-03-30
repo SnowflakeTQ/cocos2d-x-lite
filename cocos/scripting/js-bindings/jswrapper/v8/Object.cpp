@@ -32,7 +32,7 @@
 
 namespace se {
 
-    std::unordered_map<Object*, void*> __objectMap; // Currently, the value `void*` is always nullptr
+    std::unordered_map<Object*, void*>* Object::__objectMap = new std::unordered_map<Object*, void*>(); // Currently, the value `void*` is always nullptr
     
     namespace {
         v8::Isolate* __isolate = nullptr;
@@ -54,10 +54,10 @@ namespace se {
             _obj.unref();
         }
 
-        auto iter = __objectMap.find(this);
-        if (iter != __objectMap.end())
+        auto iter = __objectMap->find(this);
+        if (iter != __objectMap->end())
         {
-            __objectMap.erase(iter);
+            __objectMap->erase(iter);
         }
     }
 
@@ -136,7 +136,7 @@ namespace se {
         NonRefNativePtrCreatedByCtorMap::clear();
 
         std::vector<Object*> toReleaseObjects;
-        for (const auto& e : __objectMap)
+        for (const auto& e : *__objectMap)
         {
             obj = e.first;
             cls = obj->_getClass();
@@ -154,7 +154,7 @@ namespace se {
             e->decRef();
         }
 
-        __objectMap.clear();
+        __objectMap->clear();
         __isolate = nullptr;
     }
 
@@ -301,8 +301,8 @@ namespace se {
         _obj.init(obj);
         _obj.setFinalizeCallback(nativeObjectFinalizeHook);
 
-        assert(__objectMap.find(this) == __objectMap.end());
-        __objectMap.emplace(this, nullptr);
+        assert(__objectMap->find(this) == __objectMap->end());
+        __objectMap->emplace(this, nullptr);
 
         return true;
     }

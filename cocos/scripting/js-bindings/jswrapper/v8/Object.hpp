@@ -395,10 +395,9 @@ namespace se {
         internal::PrivateData* _internalData;
 
         friend class ScriptEngine;
+    public:
+        static std::unordered_map<Object*, void*>* __objectMap; // Currently, the value `void*` is always nullptr
     };
-
-    extern std::unordered_map<Object*, void*> __objectMap; // Currently, the value `void*` is always nullptr
-
 } // namespace se {
 
 #endif // #if SCRIPT_ENGINE_TYPE == SCRIPT_ENGINE_V8
