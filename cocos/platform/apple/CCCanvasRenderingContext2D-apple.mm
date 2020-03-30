@@ -261,7 +261,9 @@ enum class CanvasTextBaseline {
 }
 
 -(NSSize) measureText:(NSString*) text {
-
+    if (text == nil) {
+        text = @"";
+    }
     NSAttributedString* stringWithAttributes = [[[NSAttributedString alloc] initWithString:text
                                                              attributes:_tokenAttributesDict] autorelease];
 
