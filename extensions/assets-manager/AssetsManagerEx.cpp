@@ -768,7 +768,7 @@ void AssetsManagerEx::downloadManifest()
     if (_updateState != State::PREDOWNLOAD_MANIFEST)
         return;
 
-    std::string manifestUrl = _localManifest->getManifestFileUrl();
+    std::string manifestUrl = _remoteManifest->getManifestFileUrl();
 
     if (manifestUrl.size() > 0)
     {
