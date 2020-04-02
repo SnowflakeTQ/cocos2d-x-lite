@@ -717,9 +717,9 @@ void AssetsManagerEx::downloadVersion()
     // No version file found
     else
     {
-        CCLOG("AssetsManagerEx : No version file found, step skipped\n");
-        _updateState = State::PREDOWNLOAD_MANIFEST;
-        downloadManifest();
+        CCLOG("AssetsManagerEx : versionUrl size <= 0, check update failed\n");
+        dispatchUpdateEvent(EventAssetsManagerEx::EventCode::ERROR_DOWNLOAD_MANIFEST);
+        _updateState = State::UNCHECKED;
     }
 }
 
@@ -732,34 +732,33 @@ void AssetsManagerEx::parseVersion()
 
     if (!_remoteManifest->isVersionLoaded())
     {
-        CCLOG("AssetsManagerEx : Fail to parse version file, step skipped\n");
-        _updateState = State::PREDOWNLOAD_MANIFEST;
-        downloadManifest();
+        CCLOG("AssetsManagerEx : pause version manifest failed, check update failed\n");
+        dispatchUpdateEvent(EventAssetsManagerEx::EventCode::ERROR_DOWNLOAD_MANIFEST);
+        _updateState = State::UNCHECKED;
+        return;
+    }
+    
+    if (_localManifest->versionGreaterOrEquals(_remoteManifest, _versionCompareHandle))
+    {
+        _updateState = State::UP_TO_DATE;
+        _fileUtils->removeDirectory(_tempStoragePath);
+        dispatchUpdateEvent(EventAssetsManagerEx::EventCode::ALREADY_UP_TO_DATE);
     }
     else
     {
-        if (_localManifest->versionGreaterOrEquals(_remoteManifest, _versionCompareHandle))
+        _updateState = State::NEED_UPDATE;
+
+        // Wait to update so continue the process
+        if (_updateEntry == UpdateEntry::DO_UPDATE)
         {
-            _updateState = State::UP_TO_DATE;
-            _fileUtils->removeDirectory(_tempStoragePath);
-            dispatchUpdateEvent(EventAssetsManagerEx::EventCode::ALREADY_UP_TO_DATE);
+            // dispatch after checking update entry because event dispatching may modify the update entry
+            dispatchUpdateEvent(EventAssetsManagerEx::EventCode::NEW_VERSION_FOUND);
+            _updateState = State::PREDOWNLOAD_MANIFEST;
+            downloadManifest();
         }
         else
         {
-            _updateState = State::NEED_UPDATE;
-
-            // Wait to update so continue the process
-            if (_updateEntry == UpdateEntry::DO_UPDATE)
-            {
-                // dispatch after checking update entry because event dispatching may modify the update entry
-                dispatchUpdateEvent(EventAssetsManagerEx::EventCode::NEW_VERSION_FOUND);
-                _updateState = State::PREDOWNLOAD_MANIFEST;
-                downloadManifest();
-            }
-            else
-            {
-                dispatchUpdateEvent(EventAssetsManagerEx::EventCode::NEW_VERSION_FOUND);
-            }
+            dispatchUpdateEvent(EventAssetsManagerEx::EventCode::NEW_VERSION_FOUND);
         }
     }
 }
@@ -780,7 +779,7 @@ void AssetsManagerEx::downloadManifest()
     // No manifest file found
     else
     {
-        CCLOG("AssetsManagerEx : No manifest file found, check update failed\n");
+        CCLOG("AssetsManagerEx : manifestUrl size <= 0, check update failed\n");
         dispatchUpdateEvent(EventAssetsManagerEx::EventCode::ERROR_DOWNLOAD_MANIFEST);
         _updateState = State::UNCHECKED;
     }
@@ -795,27 +794,26 @@ void AssetsManagerEx::parseManifest()
 
     if (!_remoteManifest->isLoaded())
     {
-        CCLOG("AssetsManagerEx : Error parsing manifest file, %s", _tempManifestPath.c_str());
+        CCLOG("AssetsManagerEx : pause project manifest failed, check update failed\n");
         dispatchUpdateEvent(EventAssetsManagerEx::EventCode::ERROR_PARSE_MANIFEST);
         _updateState = State::UNCHECKED;
+        return;
+    }
+    
+    if (_localManifest->versionGreaterOrEquals(_remoteManifest, _versionCompareHandle))
+    {
+        _updateState = State::UP_TO_DATE;
+        _fileUtils->removeDirectory(_tempStoragePath);
+        dispatchUpdateEvent(EventAssetsManagerEx::EventCode::ALREADY_UP_TO_DATE);
     }
     else
     {
-        if (_localManifest->versionGreaterOrEquals(_remoteManifest, _versionCompareHandle))
-        {
-            _updateState = State::UP_TO_DATE;
-            _fileUtils->removeDirectory(_tempStoragePath);
-            dispatchUpdateEvent(EventAssetsManagerEx::EventCode::ALREADY_UP_TO_DATE);
-        }
-        else
-        {
-            _updateState = State::NEED_UPDATE;
-            dispatchUpdateEvent(EventAssetsManagerEx::EventCode::NEW_VERSION_FOUND);
+        _updateState = State::NEED_UPDATE;
+        dispatchUpdateEvent(EventAssetsManagerEx::EventCode::NEW_VERSION_FOUND);
 
-            if (_updateEntry == UpdateEntry::DO_UPDATE)
-            {
-                startUpdate();
-            }
+        if (_updateEntry == UpdateEntry::DO_UPDATE)
+        {
+            startUpdate();
         }
     }
 }
