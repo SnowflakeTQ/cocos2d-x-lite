@@ -117,6 +117,10 @@ public:
     void start();
     void restart();
     void end();
+    
+    inline void pause() {_isPaused = true;}
+    inline void resume() {_isPaused = false;}
+    inline bool isPaused() {return _isPaused;}
 
     /**
      * @brief Sets the preferred frame rate for main loop callback.
@@ -209,6 +213,8 @@ private:
     bool _isDownsampleEnabled = false;
 
     cocos2d::Vec2 _viewSize;
+    
+    bool _isPaused = false;
 };
 
 // end of platform group

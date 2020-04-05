@@ -164,6 +164,10 @@ namespace
 
 -(void) doCaller: (id) sender
 {
+    if (_application->isPaused()) {
+        return;
+    }
+    
     static std::chrono::steady_clock::time_point prevTime;
     static std::chrono::steady_clock::time_point now;
     static float dt = 0.f;
