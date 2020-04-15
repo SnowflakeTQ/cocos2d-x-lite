@@ -97,7 +97,7 @@ public:
     
     /** @brief Update with the current local manifest.
      */
-    void update();
+    void update(int version = -1);
     
     /** @brief Reupdate all failed assets under the current AssetsManagerEx context
      */
@@ -398,6 +398,9 @@ private:
     
     //! Marker for whether the assets manager is inited
     bool _inited;
+    
+    // 目标版本
+    int _targetVersion;
 };
 
 NS_CC_EXT_END

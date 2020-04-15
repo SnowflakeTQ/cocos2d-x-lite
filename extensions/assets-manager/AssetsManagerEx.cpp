@@ -29,6 +29,7 @@
 
 #include <stdio.h>
 #include <errno.h>
+#include <regex>
 
 #ifdef MINIZIP_FROM_SYSTEM
 #include <minizip/unzip.h>
@@ -708,6 +709,11 @@ void AssetsManagerEx::downloadVersion()
 
     std::string versionUrl = _localManifest->getVersionFileUrl();
 
+    if (_targetVersion != -1) {
+        std::string pattern = "version.manifest";
+        versionUrl = versionUrl.replace(versionUrl.find(pattern), sizeof(pattern) - 1, "build_" + std::to_string(_targetVersion) + "/res/project.manifest");
+    }
+
     if (versionUrl.size() > 0)
     {
         _updateState = State::DOWNLOADING_VERSION;
@@ -1021,8 +1027,10 @@ void AssetsManagerEx::checkUpdate()
     }
 }
 
-void AssetsManagerEx::update()
+void AssetsManagerEx::update(int version)
 {
+    _targetVersion = version;
+    
     if (_updateEntry != UpdateEntry::NONE)
     {
         CCLOGERROR("AssetsManagerEx::update, updateEntry isn't NONE");
