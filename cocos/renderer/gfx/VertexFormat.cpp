@@ -77,7 +77,7 @@ VertexFormat::VertexFormat(const std::vector<Info>& infos)
     std::vector<Element*> _elements;
     std::vector<Element*>& elements = _elements;
 #else
-    std::vector<Element*> elements;
+    // std::vector<Element*> elements;
 #endif
 
     uint32_t offset = 0;
@@ -96,17 +96,24 @@ VertexFormat::VertexFormat(const std::vector<Info>& infos)
 
         _names.push_back(el.name);
         _attr2el[el.name] = el;
-        elements.push_back(&_attr2el[el.name]);
+        // elements.push_back(&_attr2el[el.name]);
 
         _bytes += el.bytes;
         offset += el.bytes;
     }
 
-    for (size_t i = 0, len = elements.size(); i < len; ++i)
+    auto it = _attr2el.begin();
+    while(it != _attr2el.end())
     {
-        auto& el = elements[i];
-        el->stride = _bytes;
+        it->second.stride = _bytes;
+        it++;
     }
+
+    // for (size_t i = 0, len = elements.size(); i < len; ++i)
+    // {
+    //     auto& el = elements[i];
+    //     el->stride = _bytes;
+    // }
 }
 
 VertexFormat::VertexFormat(const VertexFormat& o)
