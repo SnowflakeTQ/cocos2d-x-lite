@@ -464,7 +464,7 @@ namespace se {
             SAFE_DEC_REF(_globalObj);
             Object::cleanup();
             Class::cleanup();
-            garbageCollect();
+            // garbageCollect();
 
             __oldConsoleLog.setUndefined();
             __oldConsoleDebug.setUndefined();
