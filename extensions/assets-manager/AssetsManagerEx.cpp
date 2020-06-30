@@ -713,6 +713,11 @@ void AssetsManagerEx::downloadVersion()
         std::string pattern = "version.manifest";
         versionUrl = versionUrl.replace(versionUrl.find(pattern), sizeof(pattern) - 1, "build_" + std::to_string(_targetVersion) + "/res/project.manifest");
     }
+    
+    if (_isTestDevice) {
+        std::string pattern = "version.manifest";
+        versionUrl = versionUrl.replace(versionUrl.find(pattern), sizeof(pattern) - 1, "test_version.manifest");
+    }
 
     if (versionUrl.size() > 0)
     {
@@ -1027,9 +1032,10 @@ void AssetsManagerEx::checkUpdate()
     }
 }
 
-void AssetsManagerEx::update(int version)
+void AssetsManagerEx::update(int version, bool isTestDevice)
 {
     _targetVersion = version;
+    _isTestDevice = isTestDevice;
     
     if (_updateEntry != UpdateEntry::NONE)
     {
