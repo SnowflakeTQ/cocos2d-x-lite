@@ -711,12 +711,12 @@ void AssetsManagerEx::downloadVersion()
 
     if (_targetVersion != -1) {
         std::string pattern = "version.manifest";
-        versionUrl = versionUrl.replace(versionUrl.find(pattern), sizeof(pattern) - 1, "build_" + std::to_string(_targetVersion) + "/res/project.manifest");
+        versionUrl = versionUrl.replace(versionUrl.find(pattern), pattern.length(), "build_" + std::to_string(_targetVersion) + "/res/project.manifest");
     }
     
     if (_isTestDevice) {
         std::string pattern = "version.manifest";
-        versionUrl = versionUrl.replace(versionUrl.find(pattern), sizeof(pattern) - 1, "test_version.manifest");
+        versionUrl = versionUrl.replace(versionUrl.find(pattern), pattern.length(), "test_version.manifest");
     }
     
     CCLOG("AssetsManagerEx : versionUrl %s\n", versionUrl.c_str());
