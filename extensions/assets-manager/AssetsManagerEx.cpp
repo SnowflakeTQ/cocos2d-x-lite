@@ -718,6 +718,8 @@ void AssetsManagerEx::downloadVersion()
         std::string pattern = "version.manifest";
         versionUrl = versionUrl.replace(versionUrl.find(pattern), sizeof(pattern) - 1, "test_version.manifest");
     }
+    
+    CCLOG("AssetsManagerEx : versionUrl %s\n", versionUrl.c_str());
 
     if (versionUrl.size() > 0)
     {
@@ -780,6 +782,8 @@ void AssetsManagerEx::downloadManifest()
         return;
 
     std::string manifestUrl = _remoteManifest->getManifestFileUrl();
+    
+    CCLOG("AssetsManagerEx : manifestUrl %s\n", manifestUrl.c_str());
 
     if (manifestUrl.size() > 0)
     {
