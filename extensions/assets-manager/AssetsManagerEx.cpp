@@ -367,7 +367,8 @@ bool AssetsManagerEx::loadLocalManifest(const std::string& manifestUrl)
         if (cachedManifest)
         {
             bool localNewer = _localManifest->versionGreater(cachedManifest, _versionCompareHandle);
-            if (localNewer)
+            bool isClientVersionEquals = _localManifest->clientVersionEquals(cachedManifest);
+            if (!isClientVersionEquals || localNewer)
             {
                 // Recreate storage, to empty the content
                 _fileUtils->removeDirectory(_storagePath);

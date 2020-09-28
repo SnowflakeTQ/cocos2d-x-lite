@@ -32,6 +32,7 @@
 #include <stdio.h>
 
 #define KEY_VERSION             "version"
+#define KEY_CLIENT_VERSION      "clientVersion"
 #define KEY_PACKAGE_URL         "packageUrl"
 #define KEY_MANIFEST_URL        "remoteManifestUrl"
 #define KEY_VERSION_URL         "remoteVersionUrl"
@@ -81,6 +82,7 @@ Manifest::Manifest(const std::string& manifestUrl/* = ""*/)
 , _remoteManifestUrl("")
 , _remoteVersionUrl("")
 , _version("")
+, _clientVersion("")
 , _engineVer("")
 {
     // Init variables
@@ -97,6 +99,7 @@ Manifest::Manifest(const std::string& content, const std::string& manifestRoot)
 , _remoteManifestUrl("")
 , _remoteVersionUrl("")
 , _version("")
+, _clientVersion("")
 , _engineVer("")
 {
     // Init variables
@@ -237,6 +240,11 @@ bool Manifest::versionEquals(const Manifest *b) const
         }
     }
     return true;
+}
+
+bool Manifest::clientVersionEquals(const Manifest *b) const
+{
+    return _clientVersion == b->getClientVersion();
 }
 
 bool Manifest::versionGreaterOrEquals(const Manifest *b, const std::function<int(const std::string& versionA, const std::string& versionB)>& handle) const
@@ -406,6 +414,11 @@ const std::string& Manifest::getVersion() const
     return _version;
 }
 
+const std::string& Manifest::getClientVersion() const
+{
+    return _clientVersion;
+}
+
 const std::vector<std::string>& Manifest::getGroups() const
 {
     return _groups;
@@ -469,6 +482,7 @@ void Manifest::clear()
         _remoteManifestUrl = "";
         _remoteVersionUrl = "";
         _version = "";
+        _clientVersion = "";
         _engineVer = "";
         
         _versionLoaded = false;
@@ -537,6 +551,12 @@ void Manifest::loadVersion(const rapidjson::Document &json)
     if ( json.HasMember(KEY_VERSION) && json[KEY_VERSION].IsString() )
     {
         _version = json[KEY_VERSION].GetString();
+    }
+    
+    // Retrieve client version
+    if ( json.HasMember(KEY_CLIENT_VERSION) && json[KEY_CLIENT_VERSION].IsString() )
+    {
+        _clientVersion = json[KEY_CLIENT_VERSION].GetString();
     }
     
     // Retrieve local group version

@@ -111,6 +111,10 @@ public:
      */
     const std::string& getVersion() const;
     
+    /** @brief Gets manifest client version.
+    */
+    const std::string& getClientVersion() const;
+    
     /** @brief Get the search paths list related to the Manifest.
      */
     std::vector<std::string> getSearchPaths() const;
@@ -173,6 +177,8 @@ protected:
      * @return Equal or not
      */
     bool versionEquals(const Manifest *b) const;
+    
+    bool clientVersionEquals(const Manifest *b) const;
     
     /** @brief Check whether the version of this manifest is greater or equals than another.
      * @param b         The other manifest
@@ -267,6 +273,9 @@ private:
     
     //! The version of local manifest
     std::string _version;
+    
+    //! The version of the client
+    std::string _clientVersion;
     
     //! All groups exist in manifest [Optional]
     std::vector<std::string> _groups;
