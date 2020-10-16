@@ -5346,6 +5346,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				ENABLE_BITCODE = NO;
+				EXCLUDED_ARCHS = "armv7 armv7s";
 				EXECUTABLE_PREFIX = "";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "../cocos/platform/ios/cocos2d-prefix.pch";
@@ -5354,7 +5355,6 @@
 				HEADER_SEARCH_PATHS = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../external/ios/libs\"";
-				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "-DCC_NEW_RENDERER";
 				OTHER_LDFLAGS = "-llibsql3";
 				SDKROOT = iphoneos;
@@ -5374,6 +5374,7 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_BITCODE = NO;
+				EXCLUDED_ARCHS = "armv7 armv7s";
 				EXECUTABLE_PREFIX = "";
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -5383,7 +5384,6 @@
 				HEADER_SEARCH_PATHS = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../external/ios/libs\"";
-				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "-llibsql3";
 				SDKROOT = iphoneos;
