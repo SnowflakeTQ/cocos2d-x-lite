@@ -31,17 +31,18 @@
 #include <fstream>
 #include <stdio.h>
 
-#define KEY_VERSION             "version"
-#define KEY_CLIENT_VERSION      "clientVersion"
-#define KEY_PACKAGE_URL         "packageUrl"
-#define KEY_MANIFEST_URL        "remoteManifestUrl"
-#define KEY_VERSION_URL         "remoteVersionUrl"
-#define KEY_GROUP_VERSIONS      "groupVersions"
-#define KEY_ENGINE_VERSION      "engineVersion"
-#define KEY_UPDATING            "updating"
-#define KEY_ASSETS              "assets"
-#define KEY_COMPRESSED_FILES    "compressedFiles"
-#define KEY_SEARCH_PATHS        "searchPaths"
+#define KEY_VERSION                     "version"
+#define KEY_CLIENT_VERSION              "clientVersion"
+#define KEY_PACKAGE_URL                 "packageUrl"
+#define KEY_MANIFEST_URL                "remoteManifestUrl"
+#define KEY_VERSION_URL                 "remoteVersionUrl"
+#define KEY_GROUP_VERSIONS              "groupVersions"
+#define KEY_ENGINE_VERSION              "engineVersion"
+#define KEY_UPDATING                    "updating"
+#define KEY_ASSETS                      "assets"
+#define KEY_COMPRESSED_FILES            "compressedFiles"
+#define KEY_SEARCH_PATHS                "searchPaths"
+#define KEY_SUPPORT_CLIENT_VERSIONS     "supportClientVersions"
 
 #define KEY_PATH                "path"
 #define KEY_MD5                 "md5"
@@ -247,6 +248,16 @@ bool Manifest::clientVersionEquals(const Manifest *b) const
     return _clientVersion == b->getClientVersion();
 }
 
+bool Manifest::isCurrentClientSupported(const std::string clientVersion) const
+{
+    for (int i = 0; i < _supportClientVersions.size(); i++) {
+        if (clientVersion == _supportClientVersions[i]) {
+            return true;
+        }
+    }
+    return false;
+}
+
 bool Manifest::versionGreaterOrEquals(const Manifest *b, const std::function<int(const std::string& versionA, const std::string& versionB)>& handle) const
 {
     std::string localVersion = getVersion();
@@ -364,6 +375,11 @@ std::vector<std::string> Manifest::getSearchPaths() const
         searchPaths.push_back(path);
     }
     return searchPaths;
+}
+
+std::vector<std::string> Manifest::getSupportClientVersions() const
+{
+    return _supportClientVersions;
 }
 
 void Manifest::prependSearchPaths()
@@ -492,6 +508,7 @@ void Manifest::clear()
     {
         _assets.clear();
         _searchPaths.clear();
+        _supportClientVersions.clear();
         _loaded = false;
     }
 }
@@ -634,6 +651,21 @@ void Manifest::loadManifest(const rapidjson::Document &json)
             {
                 if (paths[i].IsString()) {
                     _searchPaths.push_back(paths[i].GetString());
+                }
+            }
+        }
+    }
+    
+    // Retrieve all support client versions
+    if ( json.HasMember(KEY_SUPPORT_CLIENT_VERSIONS) )
+    {
+        const rapidjson::Value& supportClientVersions = json[KEY_SUPPORT_CLIENT_VERSIONS];
+        if (supportClientVersions.IsArray())
+        {
+            for (rapidjson::SizeType i = 0; i < supportClientVersions.Size(); ++i)
+            {
+                if (supportClientVersions[i].IsString()) {
+                    _supportClientVersions.push_back(supportClientVersions[i].GetString());
                 }
             }
         }

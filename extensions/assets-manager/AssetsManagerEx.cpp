@@ -56,7 +56,7 @@ const std::string AssetsManagerEx::MANIFEST_ID = "@manifest";
 
 // Implementation of AssetsManagerEx
 
-AssetsManagerEx::AssetsManagerEx(const std::string& manifestUrl, const std::string& storagePath)
+AssetsManagerEx::AssetsManagerEx(const std::string& manifestUrl, const std::string& storagePath, const std::string& clientVersion)
 : _updateState(State::UNINITED)
 , _assets(nullptr)
 , _storagePath("")
@@ -80,6 +80,7 @@ AssetsManagerEx::AssetsManagerEx(const std::string& manifestUrl, const std::stri
 , _currConcurrentTask(0)
 , _verifyCallback(nullptr)
 , _inited(false)
+, _clientVersion(clientVersion)
 {
     init(manifestUrl, storagePath);
 }
@@ -163,9 +164,9 @@ AssetsManagerEx::~AssetsManagerEx()
     CC_SAFE_RELEASE(_remoteManifest);
 }
 
-AssetsManagerEx* AssetsManagerEx::create(const std::string& manifestUrl, const std::string& storagePath)
+AssetsManagerEx* AssetsManagerEx::create(const std::string& manifestUrl, const std::string& storagePath, const std::string& clientVersion)
 {
-    AssetsManagerEx* ret = new (std::nothrow) AssetsManagerEx(manifestUrl, storagePath);
+    AssetsManagerEx* ret = new (std::nothrow) AssetsManagerEx(manifestUrl, storagePath, clientVersion);
     if (ret)
     {
         ret->autorelease();
@@ -367,8 +368,8 @@ bool AssetsManagerEx::loadLocalManifest(const std::string& manifestUrl)
         if (cachedManifest)
         {
             bool localNewer = _localManifest->versionGreater(cachedManifest, _versionCompareHandle);
-            bool isClientVersionEquals = _localManifest->clientVersionEquals(cachedManifest);
-            if (!isClientVersionEquals || localNewer)
+            bool isCurrentClientSupported = cachedManifest->isCurrentClientSupported(_clientVersion);
+            if (localNewer || !isCurrentClientSupported)
             {
                 // Recreate storage, to empty the content
                 _fileUtils->removeDirectory(_storagePath);

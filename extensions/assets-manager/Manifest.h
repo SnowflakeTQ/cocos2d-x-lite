@@ -119,6 +119,10 @@ public:
      */
     std::vector<std::string> getSearchPaths() const;
     
+    /** @brief Gets manifest support client versions.
+     */
+    std::vector<std::string> getSupportClientVersions() const;
+    
     /** @brief Get the manifest root path, normally it should also be the local storage path.
      */
     const std::string& getManifestRoot() const { return _manifestRoot; };
@@ -179,6 +183,8 @@ protected:
     bool versionEquals(const Manifest *b) const;
     
     bool clientVersionEquals(const Manifest *b) const;
+    
+    bool isCurrentClientSupported(const std::string clientVersion) const;
     
     /** @brief Check whether the version of this manifest is greater or equals than another.
      * @param b         The other manifest
@@ -291,6 +297,9 @@ private:
     
     //! All search paths
     std::vector<std::string> _searchPaths;
+    
+    //! All support client versions
+    std::vector<std::string> _supportClientVersions;
     
     rapidjson::Document _json;
 };

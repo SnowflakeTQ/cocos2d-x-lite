@@ -1091,7 +1091,7 @@ static bool js_extension_AssetsManagerEx_create(se::State& s)
         ok &= seval_to_std_string(args[0], &arg0);
         ok &= seval_to_std_string(args[1], &arg1);
         SE_PRECONDITION2(ok, false, "js_extension_AssetsManagerEx_create : Error processing arguments");
-        auto result = cocos2d::extension::AssetsManagerEx::create(arg0, arg1);
+        auto result = cocos2d::extension::AssetsManagerEx::create(arg0, arg1, "");
         result->retain();
         auto obj = se::Object::createObjectWithClass(__jsb_cocos2d_extension_AssetsManagerEx_class);
         obj->setPrivateData(result);
@@ -1168,7 +1168,7 @@ static bool js_extension_AssetsManagerEx_constructor(se::State& s)
             std::string arg1;
             ok &= seval_to_std_string(args[1], &arg1);
             if (!ok) { ok = true; break; }
-            cocos2d::extension::AssetsManagerEx* cobj = new (std::nothrow) cocos2d::extension::AssetsManagerEx(arg0, arg1);
+            cocos2d::extension::AssetsManagerEx* cobj = new (std::nothrow) cocos2d::extension::AssetsManagerEx(arg0, arg1, "");
             s.thisObject()->setPrivateData(cobj);
             return true;
         }

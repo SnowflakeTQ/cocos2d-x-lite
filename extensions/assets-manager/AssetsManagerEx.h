@@ -83,7 +83,7 @@ public:
      @warning   The cached manifest in your storage path have higher priority and will be searched first,
                 only if it doesn't exist, AssetsManagerEx will use the given manifestUrl.
      */
-    static AssetsManagerEx* create(const std::string &manifestUrl, const std::string &storagePath);
+    static AssetsManagerEx* create(const std::string &manifestUrl, const std::string &storagePath, const std::string &clientVersion);
     
     /** @brief  Check out if there is a new version of manifest.
      *          You may use this method before updating, then let user determine whether
@@ -195,7 +195,7 @@ public:
     
 CC_CONSTRUCTOR_ACCESS:
     
-    AssetsManagerEx(const std::string& manifestUrl, const std::string& storagePath);
+    AssetsManagerEx(const std::string& manifestUrl, const std::string& storagePath, const std::string& clientVersion);
     
     AssetsManagerEx(const std::string& manifestUrl, const std::string& storagePath, const VersionCompareHandle& handle);
     
@@ -402,6 +402,7 @@ private:
     // 目标版本
     int _targetVersion;
     bool _isTestDevice;
+    std::string _clientVersion;
 };
 
 NS_CC_EXT_END
