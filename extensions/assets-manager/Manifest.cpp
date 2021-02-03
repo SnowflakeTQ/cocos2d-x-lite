@@ -32,10 +32,7 @@
 #include <stdio.h>
 
 #define KEY_VERSION                     "version"
-#define KEY_CLIENT_VERSION              "clientVersion"
 #define KEY_PACKAGE_URL                 "packageUrl"
-#define KEY_MANIFEST_URL                "remoteManifestUrl"
-#define KEY_VERSION_URL                 "remoteVersionUrl"
 #define KEY_GROUP_VERSIONS              "groupVersions"
 #define KEY_ENGINE_VERSION              "engineVersion"
 #define KEY_UPDATING                    "updating"
@@ -80,10 +77,7 @@ Manifest::Manifest(const std::string& manifestUrl/* = ""*/)
 , _loaded(false)
 , _updating(false)
 , _manifestRoot("")
-, _remoteManifestUrl("")
-, _remoteVersionUrl("")
 , _version("")
-, _clientVersion("")
 , _engineVer("")
 {
     // Init variables
@@ -97,10 +91,7 @@ Manifest::Manifest(const std::string& content, const std::string& manifestRoot)
 , _loaded(false)
 , _updating(false)
 , _manifestRoot("")
-, _remoteManifestUrl("")
-, _remoteVersionUrl("")
 , _version("")
-, _clientVersion("")
 , _engineVer("")
 {
     // Init variables
@@ -241,11 +232,6 @@ bool Manifest::versionEquals(const Manifest *b) const
         }
     }
     return true;
-}
-
-bool Manifest::clientVersionEquals(const Manifest *b) const
-{
-    return _clientVersion == b->getClientVersion();
 }
 
 bool Manifest::isCurrentClientSupported(const std::string clientVersion) const
@@ -415,24 +401,9 @@ const std::string& Manifest::getPackageUrl() const
     return _packageUrl;
 }
 
-const std::string& Manifest::getManifestFileUrl() const
-{
-    return _remoteManifestUrl;
-}
-
-const std::string& Manifest::getVersionFileUrl() const
-{
-    return _remoteVersionUrl;
-}
-
 const std::string& Manifest::getVersion() const
 {
     return _version;
-}
-
-const std::string& Manifest::getClientVersion() const
-{
-    return _clientVersion;
 }
 
 const std::vector<std::string>& Manifest::getGroups() const
@@ -495,10 +466,7 @@ void Manifest::clear()
         _groups.clear();
         _groupVer.clear();
         
-        _remoteManifestUrl = "";
-        _remoteVersionUrl = "";
         _version = "";
-        _clientVersion = "";
         _engineVer = "";
         
         _versionLoaded = false;
@@ -552,28 +520,10 @@ Manifest::Asset Manifest::parseAsset(const std::string &path, const rapidjson::V
 
 void Manifest::loadVersion(const rapidjson::Document &json)
 {
-    // Retrieve remote manifest url
-    if ( json.HasMember(KEY_MANIFEST_URL) && json[KEY_MANIFEST_URL].IsString() )
-    {
-        _remoteManifestUrl = json[KEY_MANIFEST_URL].GetString();
-    }
-    
-    // Retrieve remote version url
-    if ( json.HasMember(KEY_VERSION_URL) && json[KEY_VERSION_URL].IsString() )
-    {
-        _remoteVersionUrl = json[KEY_VERSION_URL].GetString();
-    }
-    
     // Retrieve local version
     if ( json.HasMember(KEY_VERSION) && json[KEY_VERSION].IsString() )
     {
         _version = json[KEY_VERSION].GetString();
-    }
-    
-    // Retrieve client version
-    if ( json.HasMember(KEY_CLIENT_VERSION) && json[KEY_CLIENT_VERSION].IsString() )
-    {
-        _clientVersion = json[KEY_CLIENT_VERSION].GetString();
     }
     
     // Retrieve local group version

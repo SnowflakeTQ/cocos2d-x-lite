@@ -83,7 +83,7 @@ public:
      @warning   The cached manifest in your storage path have higher priority and will be searched first,
                 only if it doesn't exist, AssetsManagerEx will use the given manifestUrl.
      */
-    static AssetsManagerEx* create(const std::string &manifestUrl, const std::string &storagePath, const std::string &clientVersion);
+    static AssetsManagerEx* create(const std::string &manifestUrl, const std::string &storagePath, const std::string &clientVersion, const std::string& hostAddr);
     
     /** @brief  Check out if there is a new version of manifest.
      *          You may use this method before updating, then let user determine whether
@@ -97,7 +97,7 @@ public:
     
     /** @brief Update with the current local manifest.
      */
-    void update(int version = -1, bool isTestDevice = false);
+    void update(int targetVersion = -1, bool isTestDevice = false);
     
     /** @brief Reupdate all failed assets under the current AssetsManagerEx context
      */
@@ -195,7 +195,7 @@ public:
     
 CC_CONSTRUCTOR_ACCESS:
     
-    AssetsManagerEx(const std::string& manifestUrl, const std::string& storagePath, const std::string& clientVersion);
+    AssetsManagerEx(const std::string& manifestUrl, const std::string& storagePath, const std::string& clientVersion, const std::string& hostAddr);
     
     AssetsManagerEx(const std::string& manifestUrl, const std::string& storagePath, const VersionCompareHandle& handle);
     
@@ -401,8 +401,14 @@ private:
     
     // 目标版本
     int _targetVersion;
+    // 是否为测试设备
+    // 正式设备请求的 version.manifest
+    // 测试设备请求的 test_version.manifest
     bool _isTestDevice;
+    // 当前客户端的版本号
     std::string _clientVersion;
+    // 下载根地址 eg. https://dt9sggrs7ky42.cloudfront.net/
+    std::string _hostAddr;
 };
 
 NS_CC_EXT_END

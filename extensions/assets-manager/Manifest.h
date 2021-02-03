@@ -98,23 +98,11 @@ public:
     /** @brief Gets remote package url.
      */
     const std::string& getPackageUrl() const;
-    
-    /** @brief Gets remote manifest file url.
-     */
-    const std::string& getManifestFileUrl() const;
-    
-    /** @brief Gets remote version file url.
-     */
-    const std::string& getVersionFileUrl() const;
-    
+        
     /** @brief Gets manifest version.
      */
     const std::string& getVersion() const;
-    
-    /** @brief Gets manifest client version.
-    */
-    const std::string& getClientVersion() const;
-    
+        
     /** @brief Get the search paths list related to the Manifest.
      */
     std::vector<std::string> getSearchPaths() const;
@@ -181,9 +169,7 @@ protected:
      * @return Equal or not
      */
     bool versionEquals(const Manifest *b) const;
-    
-    bool clientVersionEquals(const Manifest *b) const;
-    
+        
     bool isCurrentClientSupported(const std::string clientVersion) const;
     
     /** @brief Check whether the version of this manifest is greater or equals than another.
@@ -270,19 +256,10 @@ private:
     
     //! The remote package url
     std::string _packageUrl;
-    
-    //! The remote path of manifest file
-    std::string _remoteManifestUrl;
-    
-    //! The remote path of version file [Optional]
-    std::string _remoteVersionUrl;
-    
+            
     //! The version of local manifest
     std::string _version;
-    
-    //! The version of the client
-    std::string _clientVersion;
-    
+        
     //! All groups exist in manifest [Optional]
     std::vector<std::string> _groups;
     

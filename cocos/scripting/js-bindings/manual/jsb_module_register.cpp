@@ -39,7 +39,6 @@
 #include "cocos/scripting/js-bindings/manual/jsb_xmlhttprequest.hpp"
 #include "cocos/scripting/js-bindings/manual/jsb_cocos2dx_network_manual.h"
 #include "cocos/scripting/js-bindings/auto/jsb_cocos2dx_network_auto.hpp"
-#include "cocos/scripting/js-bindings/auto/jsb_cocos2dx_extension_auto.hpp"
 
 #if USE_GFX_RENDERER
 #include "cocos/scripting/js-bindings/auto/jsb_gfx_auto.hpp"
@@ -125,8 +124,6 @@ bool jsb_register_all_modules()
     se->addRegisterCallback(register_all_network);
     se->addRegisterCallback(register_all_cocos2dx_network_manual);
     se->addRegisterCallback(register_all_xmlhttprequest);
-    // extension depend on network
-    se->addRegisterCallback(register_all_extension);
 
 #if USE_GFX_RENDERER
     se->addRegisterCallback(register_all_gfx);

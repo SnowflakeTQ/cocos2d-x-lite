@@ -56,7 +56,7 @@ const std::string AssetsManagerEx::MANIFEST_ID = "@manifest";
 
 // Implementation of AssetsManagerEx
 
-AssetsManagerEx::AssetsManagerEx(const std::string& manifestUrl, const std::string& storagePath, const std::string& clientVersion)
+AssetsManagerEx::AssetsManagerEx(const std::string& manifestUrl, const std::string& storagePath, const std::string& clientVersion, const std::string& hostAddr)
 : _updateState(State::UNINITED)
 , _assets(nullptr)
 , _storagePath("")
@@ -81,6 +81,7 @@ AssetsManagerEx::AssetsManagerEx(const std::string& manifestUrl, const std::stri
 , _verifyCallback(nullptr)
 , _inited(false)
 , _clientVersion(clientVersion)
+, _hostAddr(hostAddr)
 {
     init(manifestUrl, storagePath);
 }
@@ -164,9 +165,9 @@ AssetsManagerEx::~AssetsManagerEx()
     CC_SAFE_RELEASE(_remoteManifest);
 }
 
-AssetsManagerEx* AssetsManagerEx::create(const std::string& manifestUrl, const std::string& storagePath, const std::string& clientVersion)
+AssetsManagerEx* AssetsManagerEx::create(const std::string& manifestUrl, const std::string& storagePath, const std::string& clientVersion, const std::string& hostAddr)
 {
-    AssetsManagerEx* ret = new (std::nothrow) AssetsManagerEx(manifestUrl, storagePath, clientVersion);
+    AssetsManagerEx* ret = new (std::nothrow) AssetsManagerEx(manifestUrl, storagePath, clientVersion, hostAddr);
     if (ret)
     {
         ret->autorelease();
@@ -367,6 +368,7 @@ bool AssetsManagerEx::loadLocalManifest(const std::string& manifestUrl)
         // Compare with cached manifest to determine which one to use
         if (cachedManifest)
         {
+            // 包里面的文件比缓存目录文件版本更高，或者缓存目录不支持当前客户端，清除缓存目录
             bool localNewer = _localManifest->versionGreater(cachedManifest, _versionCompareHandle);
             bool isCurrentClientSupported = cachedManifest->isCurrentClientSupported(_clientVersion);
             if (localNewer || !isCurrentClientSupported)
@@ -709,24 +711,21 @@ void AssetsManagerEx::downloadVersion()
     if (_updateState > State::PREDOWNLOAD_VERSION)
         return;
 
-    std::string versionUrl = _localManifest->getVersionFileUrl();
-
-    if (_targetVersion != -1) {
-        std::string pattern = "version.manifest";
-        std::size_t pos = versionUrl.find(pattern);
-        if (pos != std::string::npos) {
-            versionUrl = versionUrl.replace(pos, pattern.length(), "build_" + std::to_string(_targetVersion) + "/res/project.manifest");
-        }
-    }
+    std::string versionUrl = "";
     
     if (_isTestDevice) {
-        std::string pattern = "version.manifest";
-        std::size_t pos = versionUrl.find(pattern);
-        if (pos != std::string::npos) {
-            versionUrl = versionUrl.replace(pos, pattern.length(), "test_version.manifest");
+        if (_targetVersion != -1) {
+            // https://dt9sggrs7ky42.cloudfront.net/builds/build_1000/res/project.manifest
+            versionUrl = _hostAddr + "builds/build_" + std::to_string(_targetVersion) + "/" + _manifestUrl;
+        } else {
+            // https://dt9sggrs7ky42.cloudfront.net/versions/version_3.5.4.manifest.test
+            versionUrl = _hostAddr + "versions/version_" + _clientVersion + ".manifest.test";
         }
+    } else {
+        // https://dt9sggrs7ky42.cloudfront.net/versions/version_3.5.4.manifest
+        versionUrl = _hostAddr + "versions/version_" + _clientVersion + ".manifest";
     }
-    
+
     printf("AssetsManagerEx : versionUrl %s\n", versionUrl.c_str());
 
     if (versionUrl.size() > 0)
@@ -1044,9 +1043,9 @@ void AssetsManagerEx::checkUpdate()
     }
 }
 
-void AssetsManagerEx::update(int version, bool isTestDevice)
+void AssetsManagerEx::update(int targetVersion, bool isTestDevice)
 {
-    _targetVersion = version;
+    _targetVersion = targetVersion;
     _isTestDevice = isTestDevice;
     
     if (_updateEntry != UpdateEntry::NONE)
