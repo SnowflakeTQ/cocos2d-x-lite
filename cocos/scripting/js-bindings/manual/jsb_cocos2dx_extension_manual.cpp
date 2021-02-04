@@ -27,7 +27,6 @@
 #include "cocos/scripting/js-bindings/jswrapper/SeApi.h"
 #include "cocos/scripting/js-bindings/manual/jsb_conversions.hpp"
 #include "cocos/scripting/js-bindings/manual/jsb_global.h"
-#include "cocos/scripting/js-bindings/auto/jsb_cocos2dx_extension_auto.hpp"
 #include "cocos/base/CCThreadPool.h"
 
 #include "cocos2d.h"

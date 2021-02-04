@@ -55,7 +55,6 @@ network/CCDownloader-android.cpp \
 network/Uri.cpp \
 network/HttpClient-android.cpp \
 scripting/js-bindings/auto/jsb_cocos2dx_auto.cpp \
-scripting/js-bindings/auto/jsb_cocos2dx_extension_auto.cpp \
 scripting/js-bindings/auto/jsb_cocos2dx_network_auto.cpp \
 scripting/js-bindings/manual/JavaScriptJavaBridge.cpp \
 scripting/js-bindings/manual/jsb_opengl_manual.cpp \
