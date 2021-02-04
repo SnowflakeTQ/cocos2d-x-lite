@@ -83,7 +83,7 @@ public:
      @warning   The cached manifest in your storage path have higher priority and will be searched first,
                 only if it doesn't exist, AssetsManagerEx will use the given manifestUrl.
      */
-    static AssetsManagerEx* create(const std::string &manifestUrl, const std::string &storagePath, const std::string &clientVersion, const std::string& hostAddr);
+    static AssetsManagerEx* create(const std::string &manifestPath, const std::string &storagePath, const std::string &clientVersion, const std::string& hostAddr);
     
     /** @brief  Check out if there is a new version of manifest.
      *          You may use this method before updating, then let user determine whether
@@ -114,20 +114,7 @@ public:
     /** @brief Function for retrieving the local manifest object
      */
     const Manifest* getLocalManifest() const;
-    
-    /** @brief Load a custom local manifest object, the local manifest must be loaded already.
-     * You can only manually load local manifest when the update state is UNCHECKED, it will fail once the update process is began.
-     * This API will do the following things:
-     * 1. Reset storage path
-     * 2. Set local storage
-     * 3. Search for cached manifest and compare with the local manifest
-     * 4. Init temporary manifest and remote manifest
-     * If successfully load the given local manifest and inited other manifests, it will return true, otherwise it will return false
-     * @param localManifest    The local manifest object to be set
-     * @param storagePath    The local storage path
-     */
-    bool loadLocalManifest(Manifest* localManifest, const std::string& storagePath);
-    
+        
     /** @brief Load a local manifest from url.
      * You can only manually load local manifest when the update state is UNCHECKED, it will fail once the update process is began.
      * This API will do the following things:
@@ -138,7 +125,7 @@ public:
      * If successfully load the given local manifest and inited other manifests, it will return true, otherwise it will return false
      * @param manifestUrl    The local manifest url
      */
-    bool loadLocalManifest(const std::string& manifestUrl);
+    bool loadLocalManifest();
     
     /** @brief Function for retrieving the remote manifest object
      */
@@ -195,15 +182,13 @@ public:
     
 CC_CONSTRUCTOR_ACCESS:
     
-    AssetsManagerEx(const std::string& manifestUrl, const std::string& storagePath, const std::string& clientVersion, const std::string& hostAddr);
-    
-    AssetsManagerEx(const std::string& manifestUrl, const std::string& storagePath, const VersionCompareHandle& handle);
-    
+    AssetsManagerEx(const std::string& manifestPath, const std::string& storagePath, const std::string& clientVersion, const std::string& hostAddr);
+        
     virtual ~AssetsManagerEx();
     
 protected:
     
-    void init(const std::string& manifestUrl, const std::string& storagePath);
+    void init(const std::string& storagePath);
     
     std::string basename(const std::string& path) const;
     
@@ -321,7 +306,7 @@ private:
     std::string _tempManifestPath;
     
     //! The path of local manifest file
-    std::string _manifestUrl;
+    std::string _manifestPath;
     
     //! Local manifest
     Manifest *_localManifest;
@@ -402,8 +387,6 @@ private:
     // 目标版本
     int _targetVersion;
     // 是否为测试设备
-    // 正式设备请求的 version.manifest
-    // 测试设备请求的 test_version.manifest
     bool _isTestDevice;
     // 当前客户端的版本号
     std::string _clientVersion;

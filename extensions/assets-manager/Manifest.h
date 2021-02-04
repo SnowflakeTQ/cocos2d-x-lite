@@ -94,11 +94,7 @@ public:
     /** @brief Check whether the manifest have been fully loaded
      */
     bool isLoaded() const;
-    
-    /** @brief Gets remote package url.
-     */
-    const std::string& getPackageUrl() const;
-        
+            
     /** @brief Gets manifest version.
      */
     const std::string& getVersion() const;
@@ -194,7 +190,7 @@ protected:
     /** @brief Generate resuming download assets list
      * @param units   The download units reference to be modified by the generation result
      */
-    void genResumeAssetsList(DownloadUnits *units) const;
+    void genResumeAssetsList(DownloadUnits *units, std::string packageUrl) const;
     
     /** @brief Prepend all search paths to the FileUtils.
      */
@@ -253,10 +249,7 @@ private:
     
     //! The local manifest root
     std::string _manifestRoot;
-    
-    //! The remote package url
-    std::string _packageUrl;
-            
+                
     //! The version of local manifest
     std::string _version;
         

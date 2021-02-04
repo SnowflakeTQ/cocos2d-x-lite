@@ -32,7 +32,6 @@
 #include <stdio.h>
 
 #define KEY_VERSION                     "version"
-#define KEY_PACKAGE_URL                 "packageUrl"
 #define KEY_GROUP_VERSIONS              "groupVersions"
 #define KEY_ENGINE_VERSION              "engineVersion"
 #define KEY_UPDATING                    "updating"
@@ -329,7 +328,7 @@ std::unordered_map<std::string, Manifest::AssetDiff> Manifest::genDiff(const Man
     return diff_map;
 }
 
-void Manifest::genResumeAssetsList(DownloadUnits *units) const
+void Manifest::genResumeAssetsList(DownloadUnits *units, std::string packageUrl) const
 {
     for (auto it = _assets.begin(); it != _assets.end(); ++it)
     {
@@ -339,7 +338,7 @@ void Manifest::genResumeAssetsList(DownloadUnits *units) const
         {
             DownloadUnit unit;
             unit.customId = it->first;
-            unit.srcUrl = _packageUrl + asset.path;
+            unit.srcUrl = packageUrl + asset.path;
             unit.storagePath = _manifestRoot + asset.path;
             unit.size = asset.size;
             units->emplace(unit.customId, unit);
@@ -393,12 +392,6 @@ void Manifest::prependSearchPaths()
     {
         FileUtils::getInstance()->setSearchPaths(searchPaths);
     }
-}
-
-
-const std::string& Manifest::getPackageUrl() const
-{
-    return _packageUrl;
 }
 
 const std::string& Manifest::getVersion() const
@@ -564,18 +557,7 @@ void Manifest::loadVersion(const rapidjson::Document &json)
 void Manifest::loadManifest(const rapidjson::Document &json)
 {
     loadVersion(json);
-    
-    // Retrieve package url
-    if ( json.HasMember(KEY_PACKAGE_URL) && json[KEY_PACKAGE_URL].IsString() )
-    {
-        _packageUrl = json[KEY_PACKAGE_URL].GetString();
-        // Append automatically "/"
-        if (_packageUrl.size() > 0 && _packageUrl[_packageUrl.size() - 1] != '/')
-        {
-            _packageUrl.append("/");
-        }
-    }
-    
+        
     // Retrieve all assets
     if ( json.HasMember(KEY_ASSETS) )
     {
