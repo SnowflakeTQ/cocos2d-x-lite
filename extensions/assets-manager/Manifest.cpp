@@ -39,6 +39,7 @@
 #define KEY_COMPRESSED_FILES            "compressedFiles"
 #define KEY_SEARCH_PATHS                "searchPaths"
 #define KEY_SUPPORT_CLIENT_VERSIONS     "supportClientVersions"
+#define KEY_HOT_UPDATE_VERSION          "hotUpdateVersion"
 
 #define KEY_PATH                "path"
 #define KEY_MD5                 "md5"
@@ -182,6 +183,7 @@ bool Manifest::isVersionLoaded() const
 {
     return _versionLoaded;
 }
+
 bool Manifest::isLoaded() const
 {
     return _loaded;
@@ -367,6 +369,11 @@ std::vector<std::string> Manifest::getSupportClientVersions() const
     return _supportClientVersions;
 }
 
+std::string Manifest::getHotUpdateVersion() const
+{
+    return _hotUpdateVersion;
+}
+
 void Manifest::prependSearchPaths()
 {
     std::vector<std::string> searchPaths = FileUtils::getInstance()->getSearchPaths();
@@ -470,6 +477,7 @@ void Manifest::clear()
         _assets.clear();
         _searchPaths.clear();
         _supportClientVersions.clear();
+        _hotUpdateVersion = "";
         _loaded = false;
     }
 }
@@ -601,6 +609,11 @@ void Manifest::loadManifest(const rapidjson::Document &json)
                 }
             }
         }
+    }
+    
+    if ( json.HasMember(KEY_HOT_UPDATE_VERSION) && json[KEY_HOT_UPDATE_VERSION].IsString() )
+    {
+        _hotUpdateVersion = json[KEY_HOT_UPDATE_VERSION].GetString();
     }
     
     _loaded = true;

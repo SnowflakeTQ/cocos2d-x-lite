@@ -107,6 +107,8 @@ public:
      */
     std::vector<std::string> getSupportClientVersions() const;
     
+    std::string getHotUpdateVersion() const;
+    
     /** @brief Get the manifest root path, normally it should also be the local storage path.
      */
     const std::string& getManifestRoot() const { return _manifestRoot; };
@@ -270,6 +272,8 @@ private:
     
     //! All support client versions
     std::vector<std::string> _supportClientVersions;
+    
+    std::string _hotUpdateVersion;
     
     rapidjson::Document _json;
 };

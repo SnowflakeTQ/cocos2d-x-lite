@@ -606,13 +606,16 @@ void AssetsManagerEx::downloadVersion()
     
     if (_isTestDevice) {
         if (_targetVersion != -1) {
+            // 更新到指定 build 版本
             // https://dt9sggrs7ky42.cloudfront.net/builds/build_1000/res/project.manifest
             versionUrl = _hostAddr + "builds/build_" + std::to_string(_targetVersion) + "/" + _manifestPath;
         } else {
+            // 白名单测试
             // https://dt9sggrs7ky42.cloudfront.net/versions/version_3.5.4.manifest.test
             versionUrl = _hostAddr + "versions/version_" + _clientVersion + ".manifest.test";
         }
     } else {
+        // 正式用户
         // https://dt9sggrs7ky42.cloudfront.net/versions/version_3.5.4.manifest
         versionUrl = _hostAddr + "versions/version_" + _clientVersion + ".manifest";
     }
